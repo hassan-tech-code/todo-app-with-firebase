@@ -1,17 +1,28 @@
-# todo_app_class
+Todo App – Flutter & Firebase
+A professional task management application built with a Feature-First MVVM architecture. This project demonstrates a complete user lifecycle, from secure authentication and password recovery to persistent settings and real-time task handling.
 
-A new Flutter project.
+Key Features
+Full Auth Lifecycle:
 
-## Getting Started
+Secure Login & Signup with Firebase Auth.
 
-This project is a starting point for a Flutter application.
+Forgot Password: Integrated email recovery flow.
 
-A few resources to get you started if this is your first Flutter project:
+Smart Splash Screen: Auto-route users to the Dashboard or Login screen based on their authentication state.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Complete CRUD Operations: Create, Read, Update, and Delete tasks.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Task Interaction: Toggle task completion with interactive checkboxes and manage actions via PopupMenuButton.
+
+Dynamic Theming: Seamless Light/Dark mode switching, persisted locally via Shared Preferences.
+
+Dashboard UI: A clean, organized interface designed for productivity.
+
+Tech Stack
+Frontend: Flutter
+
+State Management: Provider
+
+Backend: Firebase (Authentication & Firestore)
+
+Local Storage: Shared Preferences (Theme persistence)
