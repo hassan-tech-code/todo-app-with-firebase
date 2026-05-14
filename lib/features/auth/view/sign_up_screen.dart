@@ -15,62 +15,40 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final formkey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
-
   final TextEditingController emailController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
-
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  dynamic myFirebaseSignUp(
-    String name,
-    String email,
-    String password,
-    String confirmPassword,
-  ) async {
-    if (email.isEmpty || password.isEmpty) {
+  dynamic myFirebaseSignUp(String name, String email, String password) async {
+    try {
       showDialog(
         context: context,
         builder: (context) =>
-            AlertDialog(title: Text('Please enter credentials')),
+            Center(child: CircularProgressIndicator(color: Colors.grey)),
       );
-    } else if (password != confirmPassword) {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then(
+            (value) => FirebaseFirestore.instance
+                .collection('users')
+                .doc(value.user?.uid)
+                .set({'name': name, 'email': email}),
+          );
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+    } on FirebaseAuthException catch (ex) {
+      if (context.mounted) Navigator.pop(context);
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Password and confirm password should match'),
-        ),
+        builder: (context) => AlertDialog(title: Text(ex.code.toString())),
       );
-    } else {
-      // UserCredential? userCredential;
-      try {
-        showDialog(
-          context: context,
-          builder: (context) =>
-              Center(child: CircularProgressIndicator(color: Colors.grey)),
-        );
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password)
-            .then(
-              (value) => FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(value.user?.uid)
-                  .set({'name': name, 'email': email}),
-            );
-        if (!mounted) return;
-        Navigator.of(context).pop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
-        );
-      } on FirebaseAuthException catch (ex) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(title: Text(ex.code.toString())),
-        );
-      }
     }
   }
 
@@ -96,56 +74,89 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 24.0),
-                    SmallText(text: 'NAME', myTextColor: Colors.black),
-                    SizedBox(height: 10),
-                    CustomTextFieldAuth(
-                      myController: nameController,
-                      myHintText: 'Enter your name',
-                    ),
-                    SizedBox(height: 20.0),
-                    SmallText(text: 'EMAIL', myTextColor: Colors.black),
-                    SizedBox(height: 10),
-                    CustomTextFieldAuth(
-                      myController: emailController,
-                      myHintText: 'example@gmail.com',
-                    ),
-                    SizedBox(height: 17),
-                    SmallText(text: 'PASSWORD', myTextColor: Colors.black),
-                    SizedBox(height: 10),
-                    CustomTextFieldAuth(
-                      myController: passwordController,
-                      myHintText: 'Enter your password',
-                      isPasswordField: true,
-                    ),
-                    SizedBox(height: 17),
-                    SmallText(
-                      text: 'RE-TYPE PASSWORD',
-                      myTextColor: Colors.black,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextFieldAuth(
-                      myController: confirmPasswordController,
-                      myHintText: 'confirm password',
-                      isPasswordField: true,
-                    ),
-                    SizedBox(height: 30),
-                    CustomElevatedButtonAuth(
-                      buttonText: 'SIGN UP',
-                      onPressedFunction: () {
-                        myFirebaseSignUp(
-                          nameController.text.toString(),
-                          emailController.text.toString(),
-                          passwordController.text.toString(),
-                          confirmPasswordController.text.toString(),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20),
-                  ],
+                child: Form(
+                  key: formkey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 24.0),
+                      SmallText(text: 'NAME', myTextColor: Colors.black),
+                      SizedBox(height: 7),
+                      CustomTextFieldAuth(
+                        myController: nameController,
+                        myHintText: 'Enter your name',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 17.0),
+                      SmallText(text: 'EMAIL', myTextColor: Colors.black),
+                      SizedBox(height: 7),
+                      CustomTextFieldAuth(
+                        myController: emailController,
+                        myHintText: 'example@gmail.com',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Please enter valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 17),
+                      SmallText(text: 'PASSWORD', myTextColor: Colors.black),
+                      SizedBox(height: 7),
+                      CustomTextFieldAuth(
+                        myController: passwordController,
+                        myHintText: 'Enter your password',
+                        isPasswordField: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 17),
+                      SmallText(
+                        text: 'RE-TYPE PASSWORD',
+                        myTextColor: Colors.black,
+                      ),
+                      SizedBox(height: 7),
+                      CustomTextFieldAuth(
+                        myController: confirmPasswordController,
+                        myHintText: 'confirm password',
+                        isPasswordField: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter password again to confirm';
+                          } else if (value != passwordController.text) {
+                            return 'Password and confirm password should be same';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 25),
+                      CustomElevatedButtonAuth(
+                        buttonText: 'SIGN UP',
+                        onPressedFunction: () {
+                          if (formkey.currentState!.validate()) {
+                            myFirebaseSignUp(
+                              nameController.text.toString(),
+                              emailController.text.toString(),
+                              passwordController.text.toString(),
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),

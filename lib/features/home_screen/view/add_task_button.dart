@@ -8,7 +8,7 @@ class AddTaskButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
+    return IconButton(
       onPressed: () {
         showDialog(
           context: context,
@@ -51,7 +51,7 @@ class AddTaskButton extends StatelessWidget {
           ),
         );
       },
-      child: Icon(Icons.add),
+      icon: Icon(Icons.add),
     );
   }
 }

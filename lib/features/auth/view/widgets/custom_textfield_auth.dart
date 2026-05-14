@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFieldAuth extends StatefulWidget {
-  TextEditingController myController = TextEditingController();
-  bool isPasswordField;
+  final TextEditingController myController;
+  final bool isPasswordField;
   final String myHintText;
-  CustomTextFieldAuth({
+  final String? Function(String?)? validator;
+  const CustomTextFieldAuth({
     super.key,
     required this.myHintText,
     this.isPasswordField = false,
     required this.myController,
+    this.validator,
   });
 
   @override
@@ -20,6 +22,7 @@ class _CustomTextFieldAuthState extends State<CustomTextFieldAuth> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: widget.validator,
       style: TextStyle(color: Colors.black),
       controller: widget.myController,
       obscureText: hidePassword,

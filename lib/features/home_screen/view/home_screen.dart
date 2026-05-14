@@ -39,14 +39,19 @@ class _HomeScreenState extends State<HomeScreen> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Scaffold(
             drawer: CustomDrawer(),
-            appBar: AppBar(title: const Text('Todo App Home')),
+            appBar: AppBar(
+              title: const Text('Todo App Home'),
+              actions: [AddTaskButton(), SizedBox(width: 14)],
+            ),
             body: Center(child: Text('No tasks found')),
-            floatingActionButton: AddTaskButton(),
           );
         }
         return Scaffold(
           drawer: CustomDrawer(),
-          appBar: AppBar(title: const Text('Todo App Home')),
+          appBar: AppBar(
+            title: const Text('Todo App Home'),
+            actions: [AddTaskButton(), SizedBox(width: 14)],
+          ),
           body: ListView.builder(
             itemCount: snapshot.data!.docs.length,
 
@@ -67,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     BoxShadow(
                       color: Colors.grey.shade100,
                       spreadRadius: 1,
-                      blurRadius: 5,
+                      blurRadius: 1,
                       offset: Offset(0, 3),
                     ),
                   ],
@@ -144,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          floatingActionButton: AddTaskButton(),
+          // floatingActionButton: AddTaskButton(),
         );
       },
     );

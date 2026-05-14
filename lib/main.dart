@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app_class/core/theme/app_themes.dart';
 import 'package:todo_app_class/core/theme/theme_view_model.dart';
 import 'package:todo_app_class/features/home_screen/view_model/task_view_model.dart';
 import 'package:todo_app_class/features/splash_screen/splash_screen.dart';

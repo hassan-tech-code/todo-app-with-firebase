@@ -4,7 +4,7 @@ import 'package:todo_app_class/core/theme/app_themes.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const myThemeKey = 'isDarkTheme';
-  bool _isDarkTheme = true;
+  bool _isDarkTheme = false;
   bool get isDark => _isDarkTheme;
   ThemeData get currentTheme =>
       _isDarkTheme ? AppTheme.darkTheme : AppTheme.lightTheme;

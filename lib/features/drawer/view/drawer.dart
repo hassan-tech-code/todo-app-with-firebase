@@ -83,11 +83,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       IconButton(
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut().then(
-                            (value) => Navigator.push(
+                            (value) => Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SignInScreen(),
                               ),
+                              (route) => false,
                             ),
                           );
 

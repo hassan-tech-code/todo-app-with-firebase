@@ -6,4 +6,5 @@ class AppAssets {
   static const String googleIcon = '${_iconPath}twitter_icon.svg';
   static const String facebookIcon = '${_iconPath}facebook_icon.svg';
   static const String appLogo = '${_iconPath}app_logo.svg';
+  static const String appLogo2 = '${_iconPath}app_logo.png';
 }

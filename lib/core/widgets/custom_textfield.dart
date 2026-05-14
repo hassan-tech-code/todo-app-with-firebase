@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   final IconData? myPrefixIcon;
   final IconData? mySuffixIcon;
-  TextEditingController myController = TextEditingController();
+  final TextEditingController myController;
   final String myHintText;
-  CustomTextField({
+  const CustomTextField({
     super.key,
     required this.myHintText,
     required this.myController,
