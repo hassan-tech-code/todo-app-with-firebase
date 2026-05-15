@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import 'package:todo_app_class/core/widgets/text_widgets.dart';
 import 'package:todo_app_class/features/auth/view/sign_in_screen.dart';
 import 'package:todo_app_class/features/auth/view/widgets/auth_header_widget.dart';
@@ -42,6 +43,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+      toastification.show(
+        //backgroundColor: Colors.green,
+        title: Text('Account created successfully'),
+        autoCloseDuration: const Duration(seconds: 5),
       );
     } on FirebaseAuthException catch (ex) {
       if (context.mounted) Navigator.pop(context);
