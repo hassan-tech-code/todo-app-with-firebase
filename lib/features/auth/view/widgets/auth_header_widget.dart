@@ -26,9 +26,19 @@ class AuthHeaderWidget extends StatelessWidget {
           isBackButtonVisible
               ? Align(alignment: Alignment.topLeft, child: CustomBackIcon())
               : SizedBox(height: 40.0),
-          MediumText(text: headerText, myTextColor: Colors.white),
+          Text(
+            headerText,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           const SizedBox(height: 16.0),
-          SmallText(text: subHeaderText, myTextColor: Colors.white),
+          Text(
+            subHeaderText,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
         ],
       ),
     );

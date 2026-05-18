@@ -22,7 +22,7 @@ class SmallText extends StatelessWidget {
       textAlign: myTextAlign,
       text,
       style: GoogleFonts.poppins(
-        color: myTextColor,
+        //color: myTextColor,
         fontSize: myFontSize,
         fontWeight: myfontWeight,
       ),
@@ -51,7 +51,7 @@ class SmallTextWhite extends StatelessWidget {
       text,
       textAlign: myTextAlign,
       style: GoogleFonts.poppins(
-        color: myTextColor,
+        // color: myTextColor,
         fontSize: myFontSize,
         fontWeight: myfontWeight,
       ),
@@ -80,7 +80,7 @@ class MediumText extends StatelessWidget {
       text,
       textAlign: myTextAlign,
       style: GoogleFonts.poppins(
-        color: myTextColor,
+        //color: myTextColor,
         fontSize: myFontSize,
         fontWeight: myfontWeight,
       ),
@@ -109,7 +109,7 @@ class LargeText extends StatelessWidget {
       text,
       textAlign: myTextAlign,
       style: GoogleFonts.poppins(
-        color: myTextColor,
+        //color: myTextColor,
         fontSize: myFontSize,
         fontWeight: myfontWeight,
       ),

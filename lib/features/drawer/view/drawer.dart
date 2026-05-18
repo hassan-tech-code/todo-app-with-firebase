@@ -14,7 +14,7 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  late Stream<DocumentSnapshot> _userStream;
+  late final Stream<DocumentSnapshot<Map<String, dynamic>>> _userStream;
 
   @override
   void initState() {
@@ -41,37 +41,45 @@ class _CustomDrawerState extends State<CustomDrawer> {
               snapshot.data!.data() as Map<String, dynamic>;
           return Column(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                width: double.infinity,
-                color: Colors.grey.shade600,
-                child: Column(
-                  children: [
-                    SizedBox(height: 70),
-                    CircleAvatar(child: Icon(Icons.person)),
-                    SizedBox(height: 20),
-                    SmallTextWhite(text: userData['name']),
-                    SizedBox(height: 12),
-                    SmallTextWhite(text: userData['email'], myFontSize: 15),
-                    SizedBox(height: 30),
-                  ],
+              DrawerHeader(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  width: double.infinity,
+                  //color: Colors.grey.shade600,
+                  child: Column(
+                    children: [
+                      //SizedBox(height: 70),
+                      CircleAvatar(child: Icon(Icons.person)),
+                      SizedBox(height: 15),
+                      Text(userData['name']),
+                      SizedBox(height: 8),
+                      SmallText(
+                        text: userData['email'],
+                        myFontSize: 14,
+                        myTextAlign: TextAlign.center,
+                      ),
+                      // SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.grey.shade500),
+                  decoration: BoxDecoration(
+                    //color: Colors.grey.shade500
+                  ),
                   width: double.infinity,
 
                   child: Column(
                     children: [
                       ListTile(
-                        title: SmallTextWhite(text: 'Dark Theme'),
+                        title: SmallText(text: 'Dark Theme'),
                         trailing: Consumer<ThemeProvider>(
                           builder: (ctx, value, child) => Icon(
-                            ctx.watch<ThemeProvider>().isDark
+                            value.isDark
                                 ? Icons.toggle_on_outlined
                                 : Icons.toggle_off_outlined,
-                            color: Colors.white,
+
                             size: 40,
                           ),
                         ),
@@ -99,7 +107,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           children: [
                             SmallTextWhite(text: 'Logout'),
                             SizedBox(width: 10),
-                            Icon(Icons.logout_outlined, color: Colors.white),
+                            Icon(Icons.logout_outlined),
                           ],
                         ),
                       ),

@@ -17,15 +17,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final String _userId = FirebaseAuth.instance.currentUser!.uid;
+  late final Stream<QuerySnapshot<Map<String, dynamic>>> _userStream;
+  @override
+  void initState() {
+    super.initState();
+    _userStream = FirebaseFirestore.instance
+        .collection('todo')
+        .where('userId', isEqualTo: _userId)
+        .orderBy('timestamp', descending: true)
+        .snapshots(includeMetadataChanges: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String userId = FirebaseAuth.instance.currentUser!.uid;
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('todo')
-          .where('userId', isEqualTo: userId)
-          .orderBy('timestamp', descending: true)
-          .snapshots(includeMetadataChanges: true),
+      stream: _userStream,
       builder: (context, snapshot) {
         //var rawTimeStamp=snapshot.data.docs
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -62,21 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       'MMMM d, h:mm a',
                     ).format((myTaskData['timestamp'] as Timestamp).toDate())
                   : 'Getting date and time....';
-              return Container(
-                alignment: Alignment.topCenter,
-                margin: EdgeInsets.symmetric(horizontal: 13, vertical: 3),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade100,
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
+              return Card(
+                // alignment: Alignment.topCenter,
+                margin: EdgeInsets.symmetric(horizontal: 13, vertical: 4),
 
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -94,24 +89,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       snapshot.data!.docs[index]['is_completed']
                           ? Icons.check_box
                           : Icons.check_box_outline_blank,
-                      color: Colors.grey.shade700,
+                      // color: Colors.grey.shade700,
                     ),
                   ),
                   isThreeLine: true,
-                  title: MediumText(text: myTaskData['title']),
+                  title: MediumText(
+                    text: myTaskData['title'],
+                    myFontSize: 18.5,
+                  ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SmallText(
                         text: myTaskData['description'],
-                        myFontSize: 14,
+                        myFontSize: 16,
+                        myfontWeight: FontWeight.w500,
                       ),
-                      SizedBox(height: 2),
-                      SmallText(
-                        text: myTaskDate.toString(),
-                        myFontSize: 12,
-                        myTextColor: Colors.grey,
-                      ),
+                      SizedBox(height: 4),
+                      SmallText(text: myTaskDate.toString(), myFontSize: 11.5),
                     ],
                   ),
                   trailing: PopupMenuButton(
