@@ -26,3 +26,23 @@ State Management: Provider
 Backend: Firebase (Authentication & Firestore)
 
 Local Storage: Shared Preferences (Theme persistence)
+
+
+## 🏁 Getting Started & Setup Instructions
+
+Follow these steps to clone, configure, and run the application locally.
+
+### 📋 Prerequisites
+Before you begin, ensure you have the following installed:
+*   [Flutter SDK](https://docs.flutter.dev/get-started/install) (Latest Stable Version)
+*   An Android/iOS Emulator or physical device with USB Debugging enabled.
+
+---
+
+### 🛠 Local Setup Steps
+
+#### 1. Clone the Repository
+Clone this project to your local machine using terminal:
+```bash
+git clone [https://github.com/hassan-tech-code/todo-app-with-firebase.git](https://github.com/hassan-tech-code/todo-app-with-firebase.git)
+cd todo-app-with-firebase
