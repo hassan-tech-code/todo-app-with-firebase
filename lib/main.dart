@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_app_class/core/theme/theme_view_model.dart';
+import 'package:todo_app_class/features/auth/data/auth_repository.dart';
+import 'package:todo_app_class/features/auth/view_model/auth_view_model.dart';
+import 'package:todo_app_class/features/drawer/view_model/custom_drawer_viewmodel.dart';
 import 'package:todo_app_class/features/home_screen/view_model/task_view_model.dart';
 import 'package:todo_app_class/features/splash_screen/splash_screen.dart';
 import 'firebase_options.dart';
@@ -19,6 +22,10 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => TaskProvider()),
         ChangeNotifierProvider.value(value: themeProvider),
+        ChangeNotifierProvider(create: (context) => CustomDrawerViewmodel()),
+        ChangeNotifierProvider(
+          create: (context) => AuthViewModel(AuthRepository()),
+        ),
       ],
       child: ToastificationWrapper(child: MyApp()),
     ),

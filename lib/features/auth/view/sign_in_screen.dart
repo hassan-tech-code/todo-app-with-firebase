@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app_class/core/constants/app_assets.dart';
 import 'package:todo_app_class/core/widgets/text_widgets.dart';
 import 'package:todo_app_class/features/auth/view/forgot_password.dart';
@@ -8,6 +8,7 @@ import 'package:todo_app_class/features/auth/view/widgets/auth_header_widget.dar
 import 'package:todo_app_class/features/auth/view/widgets/custom_elevated_button.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_textfield_auth.dart';
 import 'package:todo_app_class/features/auth/view/widgets/social_auth_button.dart';
+import 'package:todo_app_class/features/auth/view_model/auth_view_model.dart';
 import 'package:todo_app_class/features/home_screen/view/home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -22,35 +23,9 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  dynamic myFirebaseLogin(String email, String password) async {
-    try {
-      showDialog(
-        context: context,
-        builder: (context) =>
-            Center(child: CircularProgressIndicator(color: Colors.grey)),
-      );
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      if (!mounted) return;
-      Navigator.of(context).pop();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } on FirebaseAuthException catch (ex) {
-      if (context.mounted) Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(title: Text(ex.code.toString())),
-      );
-      //Navigator.pop(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final providerInstance = context.watch<AuthViewModel>();
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
@@ -62,17 +37,17 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
 
           Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24.0),
-                    topRight: Radius.circular(24.0),
-                  ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(24.0),
                 ),
+              ),
+              child: SingleChildScrollView(
                 child: Form(
                   key: formKey,
                   child: Column(
@@ -155,13 +130,23 @@ class _SignInScreenState extends State<SignInScreen> {
 
                       ///sign in button
                       CustomElevatedButtonAuth(
+                        isLoading: providerInstance.loading,
                         buttonText: 'LOG IN',
-                        onPressedFunction: () {
+
+                        onPressedFunction: () async {
                           if (formKey.currentState!.validate()) {
-                            myFirebaseLogin(
+                            await providerInstance.signIn(
                               emailController.text.toString(),
                               passwordController.text.toString(),
                             );
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(),
+                                ),
+                              );
+                            }
                           }
                         },
                       ),

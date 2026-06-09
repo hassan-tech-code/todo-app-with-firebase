@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app_class/core/widgets/text_widgets.dart';
 import 'package:todo_app_class/features/auth/view/widgets/auth_header_widget.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_elevated_button.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_textfield_auth.dart';
+import 'package:todo_app_class/features/auth/view_model/auth_view_model.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -13,34 +14,18 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  String statusText = '';
-  Color statusTextColor = Colors.transparent;
-  dynamic myFirebaseForgotPassword(String email) async {
-    if (email.isEmpty) {
-      setState(() {
-        statusText = 'Please enter your email';
-        statusTextColor = Colors.red;
-      });
-    } else {
-      try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        setState(() {
-          statusText = 'Password reset email sent';
-          statusTextColor = Colors.green;
-        });
-      } on FirebaseAuthException catch (ex) {
-        setState(() {
-          statusText = ex.code.toString();
-          statusTextColor = Colors.red;
-        });
-      }
-    }
-  }
+  final TextEditingController emailController = TextEditingController();
+  final formkey = GlobalKey<FormState>();
 
-  TextEditingController emailController = TextEditingController();
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final providerReference = context.watch<AuthViewModel>();
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
@@ -60,26 +45,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   topRight: Radius.circular(30),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SmallText(text: 'Email'),
-                  SizedBox(height: 13),
-                  CustomTextFieldAuth(
-                    myHintText: 'Enter your email',
-                    myController: emailController,
-                  ),
-                  SizedBox(height: 10),
-                  SmallText(text: statusText, myTextColor: statusTextColor),
-                  SizedBox(height: 10),
+              child: Form(
+                key: formkey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SmallText(text: 'Email'),
+                      SizedBox(height: 13),
+                      CustomTextFieldAuth(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Please enter valid email';
+                          }
+                          return null;
+                        },
+                        myHintText: 'Enter your email',
+                        myController: emailController,
+                      ),
 
-                  CustomElevatedButtonAuth(
-                    buttonText: 'Send Password reset email',
-                    onPressedFunction: () {
-                      myFirebaseForgotPassword(emailController.text.toString());
-                    },
+                      SmallText(
+                        text: providerReference.statusText,
+                        myTextColor: providerReference.statusTextColor,
+                      ),
+                      SizedBox(height: 4),
+
+                      CustomElevatedButtonAuth(
+                        buttonText: 'Send Password reset email',
+                        onPressedFunction: () {
+                          if (formkey.currentState!.validate()) {
+                            providerReference.forogotPassword(
+                              emailController.text.toString().trim(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

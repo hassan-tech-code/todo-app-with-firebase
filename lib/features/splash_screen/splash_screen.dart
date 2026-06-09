@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:todo_app_class/core/constants/app_assets.dart';
 import 'package:todo_app_class/features/auth/view/sign_in_screen.dart';
 import 'package:todo_app_class/features/home_screen/view/home_screen.dart';
@@ -23,13 +22,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        //if (!mounted) return;
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SignInScreen()),
         );
       } else {
-        //if (!mounted) return;
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),

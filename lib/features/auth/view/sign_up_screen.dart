@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_app_class/core/widgets/text_widgets.dart';
 import 'package:todo_app_class/features/auth/view/sign_in_screen.dart';
 import 'package:todo_app_class/features/auth/view/widgets/auth_header_widget.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_elevated_button.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_textfield_auth.dart';
+import 'package:todo_app_class/features/auth/view_model/auth_view_model.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,43 +25,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  dynamic myFirebaseSignUp(String name, String email, String password) async {
-    try {
-      showDialog(
-        context: context,
-        builder: (context) =>
-            Center(child: CircularProgressIndicator(color: Colors.grey)),
-      );
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then(
-            (value) => FirebaseFirestore.instance
-                .collection('users')
-                .doc(value.user?.uid)
-                .set({'name': name, 'email': email}),
-          );
-      if (!mounted) return;
-      Navigator.of(context).pop();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SignInScreen()),
-      );
-      toastification.show(
-        //backgroundColor: Colors.green,
-        title: Text('Account created successfully'),
-        autoCloseDuration: const Duration(seconds: 5),
-      );
-    } on FirebaseAuthException catch (ex) {
-      if (context.mounted) Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(title: Text(ex.code.toString())),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final providerInstance = context.watch<AuthViewModel>();
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
@@ -149,14 +117,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizedBox(height: 25),
                       CustomElevatedButtonAuth(
+                        isLoading: providerInstance.loading,
                         buttonText: 'SIGN UP',
-                        onPressedFunction: () {
+                        onPressedFunction: () async {
                           if (formkey.currentState!.validate()) {
-                            myFirebaseSignUp(
-                              nameController.text.toString(),
-                              emailController.text.toString(),
-                              passwordController.text.toString(),
-                            );
+                            await providerInstance
+                                .signUp(
+                                  emailController.text.toString().trim(),
+                                  passwordController.text.toString().trim(),
+                                  nameController.text.toString().trim(),
+                                )
+                                .then(
+                                  (value) => toastification.show(
+                                    title: Text('Account created successfully'),
+                                    autoCloseDuration: const Duration(
+                                      seconds: 5,
+                                    ),
+                                  ),
+                                );
+
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignInScreen(),
+                                ),
+                              );
+                            }
                           }
                         },
                       ),

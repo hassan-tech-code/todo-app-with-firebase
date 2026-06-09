@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app_class/core/widgets/text_widgets.dart';
 import 'package:todo_app_class/features/auth/view/widgets/custom_back_icon.dart';
 
 class AuthHeaderWidget extends StatelessWidget {
